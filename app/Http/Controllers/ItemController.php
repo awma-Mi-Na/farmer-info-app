@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
@@ -25,40 +26,69 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $attributes = $request->validate([
+            'name' => 'required|unique:items,name',
+            'unit' => 'nullable'
+        ]);
+
+        try {
+            $item = Item::create($attributes);
+            return response()->json([
+                'message' => 'Item added successfully',
+                'added_item' => $item
+            ]);
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Item $item)
     {
-        //
+        return $item;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Item $item)
     {
-        //
+        $attributes = $request->validate([
+            'name' => ['required', Rule::unique('items', 'name')->ignore($item->id)],
+            'unit' => 'nullable'
+        ]);
+        try {
+            $updated_item = $item->update($attributes);
+            return response()->json([
+                'message' => "Item updated successfully",
+                'updated_item' => $updated_item
+            ]);
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Item $item)
     {
-        //
+        try {
+            $item->delete();
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 }

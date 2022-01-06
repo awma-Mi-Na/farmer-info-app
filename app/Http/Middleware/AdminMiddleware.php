@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Auth;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,9 +18,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user() ?? false and auth()->user()->role == 'admin') {
+        // if (auth()->user() ?? false and auth()->user()->role == 'admin') {
+        if (Auth::user()->role === 'admin') {
             return $next($request);
-        } else
-            return response(Response::HTTP_FORBIDDEN);
+        }
+        return response()->json('unauthorized', 403);
     }
 }

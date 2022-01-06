@@ -16,16 +16,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//? authentication required
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::apiResource('item', ItemController::class)->only('index');
+
     Route::post('logout', [SessionController::class, 'destroy']);
-    Route::middleware('isAdmin')->group(function () {
-        Route::apiResource('item', ItemController::class)->except('index');
+
+    //? admin guard
+    Route::middleware('Admin')->group(function () {
+        Route::apiResource('item', ItemController::class)->except(['index', 'show']);
     });
 });
 
-//? public endpoints
+//? get all items
+Route::apiResource('item', ItemController::class)->only('index');
+
+//? get specific item details
+Route::apiResource('item', ItemController::class)->only('show');
+
+//? login
 Route::post('login', [SessionController::class, 'store']);
