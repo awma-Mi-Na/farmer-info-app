@@ -87,6 +87,9 @@ class ItemController extends Controller
     {
         try {
             $item->delete();
+            return response()->json([
+                'message' => 'The item has been deleted successfully'
+            ]);
         } catch (\Exception $e) {
             return $e;
         }
