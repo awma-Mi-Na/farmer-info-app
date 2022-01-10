@@ -22,6 +22,6 @@ class AdminMiddleware
         if (Auth::user()->role === 'admin') {
             return $next($request);
         }
-        return response()->json('unauthorized', 403);
+        return response()->json(['message' => 'unauthorized'], 403);
     }
 }

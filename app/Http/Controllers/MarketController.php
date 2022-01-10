@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
+use App\Models\Market;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Validator;
 
-class ItemController extends Controller
+class MarketController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class ItemController extends Controller
     public function index()
     {
         try {
-            return response()->json(Item::all(), 200);
+            return response()->json(Market::all(), 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
@@ -34,8 +34,9 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:items,name',
-            'unit' => 'nullable'
+            'name' => ['required'],
+            'location' => ['required'],
+            'district_id' => ['required', Rule::exists('districts', 'id')]
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -43,10 +44,9 @@ class ItemController extends Controller
             ], 422);
         }
         try {
-            $item = Item::create($validator->validated());
             return response()->json([
-                'message' => 'Item added successfully',
-                'added_item' => $item
+                'message' => 'Market added successfully',
+                'added_market' => Market::create($validator->validated()),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -58,37 +58,40 @@ class ItemController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Item  $item
+     * @param  \App\Models\Market  $market
      * @return \Illuminate\Http\Response
      */
-    public function show(Item $item)
+    public function show(Market $market)
     {
-        return response()->json($item, 200);
+        return response()->json($market, 200);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Item  $item
+     * @param  \App\Models\Market  $market
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request, Market $market)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', Rule::unique('items', 'name')->ignore($item->id)],
-            'unit' => 'nullable',
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => ['required'],
+                'location' => ['required'],
+                'district_id' => ['required', Rule::exists('districts', 'id')]
+            ]
+        );
+        // return $validator->messages()->getMessages();
         if ($validator->fails()) {
             return response()->json([
                 'messages' => getErrorMessages($validator->messages()->getMessages())
             ], 422);
         }
         try {
-            $updated_item = $item->update($validator->validated());
-            return response()->json([
-                'message' => "Item updated successfully"
-            ]);
+            $market->update($validator->validated());
+            return response()->json(['message' => 'Updated successfully']);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
@@ -99,16 +102,14 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Item  $item
+     * @param  \App\Models\Market  $market
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Item $item)
+    public function destroy(Market $market)
     {
         try {
-            $item->delete();
-            return response()->json([
-                'message' => 'The item has been deleted successfully'
-            ]);
+            $market->delete();
+            return response()->json(['message' => 'Market deleted successfully']);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()

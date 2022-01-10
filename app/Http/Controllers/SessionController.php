@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Illuminate\Http\Request;
+use Validator;
 
 class SessionController extends Controller
 {
@@ -25,17 +26,27 @@ class SessionController extends Controller
      */
     public function store(Request $request)
     {
-        $attributes = $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required|exists:users,email',
             'password' => 'required'
         ]);
-        if (!Auth::attempt($attributes)) {
-            return response('login failed');
-        }
 
-        return response()->json([
-            'token' => $request->user()->createToken('auth_token')->plainTextToken,
-        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'messages' => getErrorMessages($validator->messages()->getMessages())
+            ], 422);
+        }
+        try {
+            if (!Auth::attempt($validator->validated())) {
+                return response()->json(['message' => 'login failed'], 401);
+            }
+
+            return response()->json([
+                'token' => $request->user()->createToken('auth_token')->plainTextToken,
+            ]);
+        } catch (\Exception $e) {
+            response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -73,9 +84,9 @@ class SessionController extends Controller
 
         try {
             $request->user()->currentAccessToken()->delete();
-            return response()->json(['message' => 'logout successful.']);
+            return response()->json(['message' => 'Logout successful.']);
         } catch (\Exception $e) {
-            return $e;
+            return response()->json(['message' => $e->getMessage()], 400);
         }
     }
 }

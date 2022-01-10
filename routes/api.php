@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\MarketController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,20 +23,22 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::post('logout', [SessionController::class, 'destroy']);
+    Route::delete('logout', [SessionController::class, 'destroy']);
 
     //? admin guard
     Route::middleware('Admin')->group(function () {
         Route::apiResource('item', ItemController::class)->except(['index', 'show']);
         // Route::put('/items', [ItemController::class, 'update']);
+
+        Route::apiResource('market', MarketController::class)->except(['index', 'show']);
     });
 });
 
-//? get all items
-Route::apiResource('item', ItemController::class)->only('index');
-
-//? get specific item details
-Route::apiResource('item', ItemController::class)->only('show');
-
 //? login
 Route::post('login', [SessionController::class, 'store']);
+
+//? get all items and specific item
+Route::apiResource('item', ItemController::class)->only(['index', 'show']);
+
+//? get all market and specific market
+Route::apiResource('market', MarketController::class)->only(['index', 'show']);
