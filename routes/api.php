@@ -34,7 +34,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::apiResource('market', MarketController::class)->except(['index', 'show']);
         Route::apiResource('district', DistrictController::class)->except(['index', 'show']);
-        Route::apiResource('entry', EntryController::class)->except(['index', 'show']);
+        Route::apiResource('entry', EntryController::class)->except(['index', 'show', 'store']);
+    });
+
+    //? agent guard
+    Route::middleware('agent')->group(function () {
+        Route::apiResource('entry', EntryController::class)->only('store');
     });
 });
 
