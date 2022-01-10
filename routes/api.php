@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\EntryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MarketController;
 use App\Http\Controllers\SessionController;
@@ -33,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::apiResource('market', MarketController::class)->except(['index', 'show']);
         Route::apiResource('district', DistrictController::class)->except(['index', 'show']);
+        Route::apiResource('entry', EntryController::class)->except(['index', 'show']);
     });
 });
 
@@ -47,3 +49,6 @@ Route::apiResource('market', MarketController::class)->only(['index', 'show']);
 
 //? get all district and specific district details
 Route::apiResource('district', DistrictController::class)->only(['index', 'show']);
+
+//? get all entries and specific entry details
+Route::apiResource('entry', EntryController::class)->only(['index', 'show']);

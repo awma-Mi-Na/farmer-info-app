@@ -85,7 +85,7 @@ class ItemController extends Controller
             ], 422);
         }
         try {
-            $updated_item = $item->update($validator->validated());
+            $item->update($validator->validated());
             return response()->json([
                 'message' => "Item updated successfully"
             ]);
