@@ -33,7 +33,9 @@ class SessionController extends Controller
             return response('login failed');
         }
 
-        return $request->user()->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'token' => $request->user()->createToken('auth_token')->plainTextToken,
+        ]);
     }
 
     /**

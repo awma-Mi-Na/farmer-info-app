@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //? admin guard
     Route::middleware('Admin')->group(function () {
         Route::apiResource('item', ItemController::class)->except(['index', 'show']);
+        // Route::put('/items', [ItemController::class, 'update']);
     });
 });
 

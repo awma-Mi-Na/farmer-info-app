@@ -62,11 +62,13 @@ class ItemController extends Controller
      */
     public function update(Request $request, Item $item)
     {
-        $attributes = $request->validate([
-            'name' => ['required', Rule::unique('items', 'name')->ignore($item->id)],
-            'unit' => 'nullable'
-        ]);
+        // dd($request->all());
         try {
+            $attributes = $request->validate([
+                'name' => [Rule::unique('items', 'name')->ignore($item->id)],
+                'unit' => 'nullable',
+            ]);
+            // return $request->all();
             $updated_item = $item->update($attributes);
             return response()->json([
                 'message' => "Item updated successfully",
