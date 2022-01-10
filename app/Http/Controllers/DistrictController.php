@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\District;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Validator;
 
 class DistrictController extends Controller
 {
@@ -14,7 +16,7 @@ class DistrictController extends Controller
      */
     public function index()
     {
-        return response()->json(['districts' => District::all()]);
+        return response()->json(District::select(['id', 'name'])->get(), 200);
     }
 
     /**
@@ -25,13 +27,24 @@ class DistrictController extends Controller
      */
     public function store(Request $request)
     {
-        $attributes = $request->validate([
-            'name' => 'required|unique:districts,name'
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required|unique:districts,name'
+            ],
+            [
+                'name.unique' => 'Name of district already exists'
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json([
+                'messages' => getErrorMessages($validator->messages()->getMessages())
+            ], 422);
+        }
         try {
             return response()->json([
                 'message' => 'District added successfully',
-                'added_district' => District::create($attributes)
+                'added_district' => District::create($validator->validated())
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
@@ -46,9 +59,7 @@ class DistrictController extends Controller
      */
     public function show(District $district)
     {
-        return response()->json([
-            'district' => $district
-        ]);
+        return response()->json($district, 200);
     }
 
     /**
@@ -60,7 +71,26 @@ class DistrictController extends Controller
      */
     public function update(Request $request, District $district)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', Rule::unique('districts', 'name')->ignore($district->id)]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'messages' => getErrorMessages($validator->messages()->getMessages())
+            ], 422);
+        }
+
+        try {
+            $district->update($validator->validated());
+            return response()->json([
+                'message' => 'District updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 
     /**
@@ -71,6 +101,15 @@ class DistrictController extends Controller
      */
     public function destroy(District $district)
     {
-        //
+        try {
+            $district->delete();
+            return response()->json([
+                'message' => 'District deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }

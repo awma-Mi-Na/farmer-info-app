@@ -47,7 +47,7 @@ class ItemController extends Controller
             return response()->json([
                 'message' => 'Item added successfully',
                 'added_item' => $item
-            ]);
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()

@@ -47,7 +47,7 @@ class MarketController extends Controller
             return response()->json([
                 'message' => 'Market added successfully',
                 'added_market' => Market::create($validator->validated()),
-            ]);
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
