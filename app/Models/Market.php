@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Schema\Builder as SchemaBuilder;
 
 class Market extends Model
 {
@@ -19,7 +22,16 @@ class Market extends Model
     }
     public function scopeFilter(Builder $query, array $filters)
     {
-        $query->when($filters['name'] ?? false, function () {
-        });
+        $query->when($filters['name'] ?? false, function (Builder $query, string $name) {
+            $query->where('name', 'like', '%' . $name . '%');
+        })
+            ->when($filters['location'] ?? false, function (Builder $query, string $location) {
+                $query->where('location', 'like', '%' . $location . '%');
+                // $query->whereExists(function ($query) use ($location) {
+                // });
+            })
+            ->when($filters['district'] ?? false, function (Builder $query, string $district) {
+                return DB::table('markets')->join('districts', 'markets.district_id', 'districts.id')->get();
+            });
     }
 }

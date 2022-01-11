@@ -16,7 +16,7 @@ class MarketController extends Controller
      */
     public function index()
     {
-        return response()->json(Market::paginate(request('per_page') ?? 20), 200);
+        return response()->json(Market::filter(request()->all())->paginate(request('per_page') ?? 20), 200);
 
         //! include try-catch?
         // try {
