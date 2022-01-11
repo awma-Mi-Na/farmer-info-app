@@ -17,9 +17,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            'all_photos' => Photo::all()
-        ], 200);
+        return response()->json(Photo::paginate(request('per_page') ?? 20), 200);
     }
 
     /**
@@ -41,7 +39,7 @@ class PhotoController extends Controller
         }
         try {
             $validated = $validator->validated();
-            $validated['url'] = Storage::disk('photos')->put('/', $request->file('url'));
+            $validated['url'] = Storage::put('photos', $request->file('url'));
             return response()->json([
                 'added_photo' => Photo::create($validated)
             ], 201);
@@ -60,7 +58,7 @@ class PhotoController extends Controller
      */
     public function show(Photo $photo)
     {
-        return response()->json(['url' => asset('storage/photos/' . $photo->url)], 200);
+        return response()->json($photo, 200);
     }
 
     /**
@@ -83,8 +81,8 @@ class PhotoController extends Controller
         }
         $validated = $validator->validated();
         if ($request->file('url')) {
-            Storage::disk('photos')->delete($photo->url);
-            $validated['url'] = Storage::disk('photos')->put('/', $request->file('url'));
+            Storage::delete($photo->url);
+            $validated['url'] = Storage::put('photos', $request->file('url'));
         }
         try {
             $photo->update($validated);
@@ -105,7 +103,7 @@ class PhotoController extends Controller
     public function destroy(Photo $photo)
     {
         try {
-            Storage::disk('photos')->delete($photo->url);
+            Storage::delete($photo->url);
             $photo->delete();
             return response()->json([
                 'message' => 'Photo deleted successfully'
