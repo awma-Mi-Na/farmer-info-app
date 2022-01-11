@@ -7,7 +7,6 @@ use App\Http\Controllers\MarketController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('logout', [SessionController::class, 'destroy']);
 
     //? get auth user details
-    Route::get('user', [UserController::class, 'show']);
+    Route::get('user', [UserController::class, 'show'])->name('user.show');
+
+    Route::match(['put', 'patch'], 'user', [UserController::class, 'update'])->name('user.update');
 
     //? admin guard
     Route::middleware('admin')->group(function () {
@@ -35,7 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('district', DistrictController::class)->except(['index', 'show']);
         Route::apiResource('entry', EntryController::class)->except(['index', 'show', 'store']);
         Route::apiResource('photo', PhotoController::class)->except(['index', 'show', 'store']);
-        Route::get('users', [UserController::class, 'index']);
+        Route::get('users', [UserController::class, 'index'])->name('user.index');
+        Route::delete('user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
     });
 
     //? agent guard
@@ -46,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 //? register
-Route::post('register', [UserController::class, 'store']);
+Route::post('register', [UserController::class, 'store'])->name('user.store');
 
 //? login
 Route::post('login', [SessionController::class, 'store']);
