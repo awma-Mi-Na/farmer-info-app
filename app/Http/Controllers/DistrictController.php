@@ -16,7 +16,7 @@ class DistrictController extends Controller
      */
     public function index()
     {
-        return response()->json(District::select(['id', 'name'])->get(), 200);
+        return response()->json(District::paginate(request('per_page') ?? 20), 200);
     }
 
     /**

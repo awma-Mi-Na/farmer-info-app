@@ -17,7 +17,7 @@ class ItemController extends Controller
     public function index()
     {
         try {
-            return response()->json(Item::all(), 200);
+            return response()->json(Item::paginate(request('per_page') ?? 20), 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()

@@ -16,13 +16,15 @@ class MarketController extends Controller
      */
     public function index()
     {
-        try {
-            return response()->json(Market::all(), 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
-        }
+        return response()->json(Market::paginate(request('per_page') ?? 20), 200);
+
+        //! include try-catch?
+        // try {
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => $e->getMessage()
+        //     ], 400);
+        // }
     }
 
     /**

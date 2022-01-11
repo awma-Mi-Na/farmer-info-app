@@ -36,17 +36,7 @@ class SessionController extends Controller
                 'messages' => getErrorMessages($validator->messages()->getMessages())
             ], 422);
         }
-        try {
-            if (!Auth::attempt($validator->validated())) {
-                return response()->json(['message' => 'login failed'], 401);
-            }
-
-            return response()->json([
-                'token' => $request->user()->createToken('auth_token')->plainTextToken,
-            ]);
-        } catch (\Exception $e) {
-            response()->json(['message' => $e->getMessage()], 400);
-        }
+        return attempt_login($validator->validated());
     }
 
     /**

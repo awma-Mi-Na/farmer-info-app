@@ -6,6 +6,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MarketController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,11 +23,10 @@ use Illuminate\Support\Facades\Route;
 
 //? authentication required
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-
     Route::delete('logout', [SessionController::class, 'destroy']);
+
+    //? get auth user details
+    Route::get('user', [UserController::class, 'show']);
 
     //? admin guard
     Route::middleware('admin')->group(function () {
@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('district', DistrictController::class)->except(['index', 'show']);
         Route::apiResource('entry', EntryController::class)->except(['index', 'show', 'store']);
         Route::apiResource('photo', PhotoController::class)->except(['index', 'show', 'store']);
+        Route::get('users', [UserController::class, 'index']);
     });
 
     //? agent guard
@@ -43,6 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('photo', PhotoController::class)->only('store');
     });
 });
+
+//? register
+Route::post('register', [UserController::class, 'store']);
 
 //? login
 Route::post('login', [SessionController::class, 'store']);
