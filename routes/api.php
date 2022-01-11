@@ -4,6 +4,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\EntryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MarketController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,18 +29,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('logout', [SessionController::class, 'destroy']);
 
     //? admin guard
-    Route::middleware('Admin')->group(function () {
+    Route::middleware('admin')->group(function () {
         Route::apiResource('item', ItemController::class)->except(['index', 'show']);
-        // Route::put('/items', [ItemController::class, 'update']);
-
         Route::apiResource('market', MarketController::class)->except(['index', 'show']);
         Route::apiResource('district', DistrictController::class)->except(['index', 'show']);
         Route::apiResource('entry', EntryController::class)->except(['index', 'show', 'store']);
+        Route::apiResource('photo', PhotoController::class)->except(['index', 'show', 'store']);
     });
 
     //? agent guard
     Route::middleware('agent')->group(function () {
         Route::apiResource('entry', EntryController::class)->only('store');
+        Route::apiResource('photo', PhotoController::class)->only('store');
     });
 });
 
@@ -57,3 +58,6 @@ Route::apiResource('district', DistrictController::class)->only(['index', 'show'
 
 //? get all entries and specific entry details
 Route::apiResource('entry', EntryController::class)->only(['index', 'show']);
+
+//? get all photos and specific photo
+Route::apiResource('photo', PhotoController::class)->only(['index', 'show']);
