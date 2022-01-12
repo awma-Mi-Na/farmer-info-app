@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Database\Schema\Builder as SchemaBuilder;
 
 class Market extends Model
 {
@@ -31,7 +28,8 @@ class Market extends Model
                 // });
             })
             ->when($filters['district'] ?? false, function (Builder $query, string $district) {
-                return DB::table('markets')->join('districts', 'markets.district_id', 'districts.id')->get();
+                // return DB::table('markets')->join('districts', 'markets.district_id', 'districts.id')->get();
+
             });
     }
 }

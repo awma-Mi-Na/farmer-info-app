@@ -20,8 +20,11 @@ if (!function_exists('attempt_login')) {
                 return response()->json(['message' => 'login failed'], 401);
             }
 
+            // request()->session()->regenerate();
+
             return response()->json([
-                'token' => request()->user()->createToken('auth_token')->plainTextToken,
+                // 'token' => request()->user()->createToken('auth_token')->plainTextToken,
+                'user' => Auth::user()
             ], 201);
         } catch (\Exception $e) {
             response()->json(['message' => $e->getMessage()], 400);

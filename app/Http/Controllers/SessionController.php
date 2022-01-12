@@ -74,6 +74,7 @@ class SessionController extends Controller
 
         try {
             $request->user()->currentAccessToken()->delete();
+            Auth::logout();
             return response()->json(['message' => 'Logout successful.']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);

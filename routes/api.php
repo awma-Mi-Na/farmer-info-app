@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/sanctum/csrf-cookie', function () {
+    return response('', 204);
+});
+
 //? authentication required
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('logout', [SessionController::class, 'destroy']);
