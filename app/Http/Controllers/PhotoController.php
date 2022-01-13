@@ -17,7 +17,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        return response()->json(Photo::paginate(request('per_page') ?? 20), 200);
+        return response()->json(Photo::filter(request()->all())->paginate(request('per_page') ?? 20), 200);
     }
 
     /**
