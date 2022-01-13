@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('district', DistrictController::class)->except(['index', 'show']);
         Route::apiResource('entry', EntryController::class)->except(['index', 'show', 'store']);
         Route::apiResource('photo', PhotoController::class)->except(['index', 'show', 'store']);
-        Route::get('users', [UserController::class, 'index'])->name('user.index');
+        // Route::get('users', [UserController::class, 'index'])->name('user.index');
         Route::delete('user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
         //? user management
@@ -53,6 +53,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('photo', PhotoController::class)->only('store');
     });
 });
+
+//? get all users with filters if requested [for testing only]
+Route::get('users', [UserController::class, 'index'])->name('user.index');
 
 //? login
 Route::post('login', [SessionController::class, 'store']);

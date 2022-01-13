@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,5 +46,19 @@ class User extends Authenticatable
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);
+    }
+
+    public function scopeFilter(Builder $query, array $filters)
+    {
+        $query
+            ->when($filters['email'] ?? false, function (Builder $query, string $email) {
+                $query->where('email', 'like', '%' . $email . '%');
+            })
+            ->when($filters['name'] ?? false, function (Builder $query, string $name) {
+                $query->where('name', 'like', '%' . $name . '%');
+            })
+            ->when($filters['role'] ?? false, function (Builder $query, string $role) {
+                $query->where('role', 'like', '%' . $role . '%');
+            });
     }
 }

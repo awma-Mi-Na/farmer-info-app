@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::paginate(request('per_page') ?? 20));
+        return response()->json(User::filter(request()->all())->paginate(request('per_page') ?? 20));
     }
 
     /**
