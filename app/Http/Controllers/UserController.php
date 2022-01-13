@@ -30,7 +30,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'role' => ['required', Rule::in(['agent'])],
+            'role' => ['required', Rule::in(['agent', 'admin'])],
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:5|max:25',
@@ -42,8 +42,10 @@ class UserController extends Controller
         }
 
         try {
-            User::create($validator->validated());
-            return attempt_login($request->only(['email', 'password']));
+            return response()->json(User::create($validator->validated()), 201);
+
+            //? users are created by the admin only, login not required
+            // return attempt_login($request->only(['email', 'password']));
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()

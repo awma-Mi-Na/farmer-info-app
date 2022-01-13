@@ -26,7 +26,7 @@ Route::get('/sanctum/csrf-cookie', function () {
 
 //? authentication required
 Route::middleware('auth:sanctum')->group(function () {
-    Route::delete('logout', [SessionController::class, 'destroy']);
+    Route::post('logout', [SessionController::class, 'destroy']);
 
     //? get auth user details
     Route::get('user', [UserController::class, 'show'])->name('user.show');
@@ -42,17 +42,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('photo', PhotoController::class)->except(['index', 'show', 'store']);
         Route::get('users', [UserController::class, 'index'])->name('user.index');
         Route::delete('user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+
+        //? user management
+        Route::post('user', [UserController::class, 'store'])->name('user.store');
     });
 
-    //? agent guard
+    //? agent guard`
     Route::middleware('agent')->group(function () {
         Route::apiResource('entry', EntryController::class)->only('store');
         Route::apiResource('photo', PhotoController::class)->only('store');
     });
 });
-
-//? register
-Route::post('register', [UserController::class, 'store'])->name('user.store');
 
 //? login
 Route::post('login', [SessionController::class, 'store']);
