@@ -5,6 +5,7 @@ use App\Http\Controllers\EntryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MarketController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -40,11 +41,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('district', DistrictController::class)->except(['index', 'show']);
         Route::apiResource('entry', EntryController::class)->except(['index', 'show', 'store']);
         Route::apiResource('photo', PhotoController::class)->except(['index', 'show', 'store']);
-        // Route::get('users', [UserController::class, 'index'])->name('user.index');
+        Route::get('users', [UserController::class, 'index'])->name('user.index');
         Route::delete('user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
         //? user management
         Route::post('user', [UserController::class, 'store'])->name('user.store');
+
+        //? reports/statistics
+        Route::get('report/weekly', [ReportController::class, 'weekly'])->name('report.weekly');
     });
 
     //? agent guard`
@@ -55,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 //? get all users with filters if requested [for testing only]
-Route::get('users', [UserController::class, 'index'])->name('user.index');
+// Route::get('users', [UserController::class, 'index'])->name('user.index');
 
 //? login
 Route::post('login', [SessionController::class, 'store']);

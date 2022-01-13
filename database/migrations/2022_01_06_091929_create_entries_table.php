@@ -15,8 +15,6 @@ class CreateEntriesTable extends Migration
     {
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('item_id')->constrained()->cascadeOnDelete();
-            // $table->foreignId('market_id')->constrained()->cascadeOnDelete();
             $table->integer('item_id')->nullable();
             $table->integer('market_id')->nullable();
             $table->float('cost')->nullable();
