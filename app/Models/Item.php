@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use DB;
-use Doctrine\DBAL\Query\QueryBuilder;
-use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
