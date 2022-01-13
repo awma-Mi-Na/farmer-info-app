@@ -17,7 +17,7 @@ class EntryController extends Controller
     public function index()
     {
         // return response()->json(Entry::with('item', 'market')->get(), 200);
-        return response()->json(Entry::paginate(request('per_page') ?? 20), 200);
+        return response()->json(Entry::filter(request()->all())->paginate(request('per_page') ?? 20), 200);
     }
 
     /**
