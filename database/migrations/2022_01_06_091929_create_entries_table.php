@@ -15,6 +15,7 @@ class CreateEntriesTable extends Migration
     {
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id')->nullable();
             $table->integer('item_id')->nullable();
             $table->integer('market_id')->nullable();
             $table->float('cost')->nullable();

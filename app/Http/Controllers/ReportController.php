@@ -12,10 +12,12 @@ class ReportController extends Controller
     {
         try {
             $result = DB::table('entries')
-                ->when($request->filled(['from', 'to']), function (Builder $query) use ($request) {
+                ->when($request->filled('from'), function (Builder $query) use ($request) {
                     $query
-                        ->whereDate('from', $request->input('from'))
-                        ->whereDate('to', $request->input('to'));
+                        ->whereDate('from', $request->input('from'));
+                })
+                ->when($request->filled('to'), function (Builder $query) use ($request) {
+                    $query->whereDate('to', $request->input('to'));
                 });
             return response()->json($result->paginate(15));
         } catch (\Exception $e) {
