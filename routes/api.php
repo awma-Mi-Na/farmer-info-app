@@ -3,10 +3,11 @@
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\EntryController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\MarketController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,9 +26,12 @@ Route::get('/sanctum/csrf-cookie', function () {
     return response('', 204);
 });
 
+//? login
+Route::post('login', LoginController::class);
+
 //? authentication required
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('logout', [SessionController::class, 'destroy']);
+    Route::post('logout', LogoutController::class);
 
     //? get auth user details
     Route::get('user', [UserController::class, 'show'])->name('user.show');
@@ -61,8 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
 //? get all users with filters if requested [for testing only]
 // Route::get('users', [UserController::class, 'index'])->name('user.index');
 
-//? login
-Route::post('login', [SessionController::class, 'store']);
 
 //? get all items and specific item
 Route::apiResource('item', ItemController::class)->only(['index', 'show']);

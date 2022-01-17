@@ -17,16 +17,13 @@ if (!function_exists('attempt_login')) {
     {
         try {
             if (Auth::attempt($validated)) {
-                // return 'authenticated';
+                if (Auth::user()->role == 'agent')
+                    $token = Auth::user()->createToken('auth_token')->plainTextToken;
                 return response()->json([
-                    // 'token' => request()->user()->createToken('auth_token')->plainTextToken,
-                    'user' => Auth::user()
+                    'user' => Auth::user(),
+                    'token' => $token ?? null
                 ], 200);
             }
-            // request()->session()->regenerate();
-
-            // return 'unauthenticated';
-
             return response()->json(['message' => 'login failed'], 401);
         } catch (\Exception $e) {
             response()->json(['message' => $e->getMessage()], 400);
