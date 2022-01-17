@@ -18,7 +18,7 @@ class LogoutController extends Controller
         try {
             // if (Auth::user()->role == 'agent')
             //     Auth::user()->currentAccessToken()->delete();
-            Auth::logout();
+            Auth::guard('web')->logout();
             return response()->json(['message' => 'Logout successful.']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);

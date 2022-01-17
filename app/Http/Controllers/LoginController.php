@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -25,6 +26,19 @@ class LoginController extends Controller
                 'messages' => getErrorMessages($validator->messages()->getMessages())
             ], 422);
         }
-        return attempt_login($validator->validated());
+
+        try {
+            if (Auth::attempt($validator->validated())) {
+                // if (Auth::user()->role == 'agent')
+                // $token = Auth::user()->createToken('auth_token')->plainTextToken;
+                return response()->json([
+                    'user' => Auth::user(),
+                    'token' => $token ?? null
+                ], 200);
+            }
+            return response()->json(['message' => 'login failed'], 401);
+        } catch (\Exception $e) {
+            response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 }
